@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Capacitor Health Dashboard</title>
+
+    <!-- MQTT.js -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ⭐ EmailJS CDN (Required for email to work) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- ⭐ Initialize EmailJS (replace with your PUBLIC KEY) -->
+    <script>
+        emailjs.init("9DE87Fo8EIA0kRXKi"); 
+        // Example: emailjs.init("PQpzTn9fGxjIlkD3B");
+    </script>
+
+    <!-- CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Capacitor Health Dashboard</h1>
+
+    <!-- KPI Cards -->
+    <div class="card-container">
+        <div class="card">ESR: <span id="esrValue">--</span> mΩ</div>
+        <div class="card">C: <span id="cValue">--</span> µF</div>
+        <div class="card">Health Index: <span id="hiValue">--</span></div>
+        <div class="card">RUL: <span id="rulValue">--</span></div>
+    </div>
+
+    <!-- LED Indicator -->
+    <div class="indicator-box">
+        <div id="led"></div>
+        <p id="capState">Waiting for data...</p>
+    </div>
+
+    <!-- ESR Trend Graph -->
+    <div style="margin-top:50px;">
+        <h2 style="color:#00eaff;">ESR Trend</h2>
+        <canvas id="esrChart"></canvas>
+    </div>
+
+    <!-- Capacitance Trend Graph -->
+    <div style="margin-top:50px;">
+        <h2 style="color:#00eaff; text-align:center;">Capacitance Trend</h2>
+        <canvas id="cChart"></canvas>
+    </div>
+
+    <!-- JS file -->
+    <script src="script.js"></script>
+
+</body>
+</html>

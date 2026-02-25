@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">   <!-- ⭐ FIX ADDED: REQUIRED FOR µ, Ω, °C -->
+
     <title>Capacitor Health Dashboard</title>
+  
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2300eaff' /%3E%3Crect x='38' y='30' width='6' height='40' fill='black' /%3E%3Crect x='56' y='30' width='6' height='40' fill='black' /%3E%3Cline x1='20' y1='50' x2='38' y2='50' stroke='black' stroke-width='4'/%3E%3Cline x1='62' y1='50' x2='80' y2='50' stroke='black' stroke-width='4'/%3E%3C/svg%3E">
 
     <!-- MQTT.js -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
@@ -9,16 +18,14 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- ⭐ EmailJS CDN (Required for email to work) -->
+    <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-    <!-- ⭐ Initialize EmailJS (replace with your PUBLIC KEY) -->
     <script>
-        emailjs.init("9DE87Fo8EIA0kRXKi"); 
-        // Example: emailjs.init("PQpzTn9fGxjIlkD3B");
+        emailjs.init("9DE87Fo8EIA0kRXKi");
     </script>
 
-    <!-- CSS file -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -28,8 +35,9 @@
 
     <!-- KPI Cards -->
     <div class="card-container">
-        <div class="card">ESR: <span id="esrValue">--</span> mΩ</div>
-        <div class="card">C: <span id="cValue">--</span> µF</div>
+        <div class="card">C: <span id="cValue">--</span> </div>
+        <div class="card">ESR: <span id="esrValue">--</span> </div>
+        <div class="card">Temperature: <span id="tempValue">--</span> </div>
         <div class="card">Health Index: <span id="hiValue">--</span></div>
         <div class="card">RUL: <span id="rulValue">--</span></div>
     </div>
@@ -52,8 +60,15 @@
         <canvas id="cChart"></canvas>
     </div>
 
-    <!-- JS file -->
+    <!-- JS -->
     <script src="script.js"></script>
+
+    <footer>
+        © Crescendo |
+        <a href="https://github.com/sathyajith04/capacitor_health_dashboard" target="_blank">
+            <i class="fab fa-github"></i> GitHub
+        </a>
+    </footer>
 
 </body>
 </html>

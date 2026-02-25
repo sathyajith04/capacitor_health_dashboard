@@ -7,7 +7,10 @@ let esrData = [];
 let cLabels = [];
 let cData = [];
 
-// ⭐ NEW — store latest real values
+// ⭐ NEW — Temperature storage
+let latestTemperature = null;
+
+// ⭐ store latest real values
 let latestESR = null;
 let latestC = null;
 let latestHI = null;
@@ -24,6 +27,7 @@ client.on("connect", () => {
     client.subscribe("dpack/c");
     client.subscribe("dpack/hi");
     client.subscribe("dpack/rul");
+    client.subscribe("dpack/Temperature");   // ⭐ NEW
 });
 
 // ------------------------------------
@@ -78,34 +82,39 @@ const cChart = new Chart(cCtx, {
 function updateLED(value) {
     let led = document.getElementById("led");
     let txt = document.getElementById("capState");
+    let color = "grey";
 
-    if (value < 150) {
-        led.style.background = "green";
+    if (value < 140) {
+        color = "#00ff88";
         txt.innerText = "HEALTHY – Capacitor OK";
     }
     else if (value < 190) {
-        led.style.background = "yellow";
+        color = "#fbff00";
         txt.innerText = "WARNING – Aging";
     }
-    else if (value < 210) {
-        led.style.background = "orange";
-        txt.innerText = "CRITICAL – Replace Soon";
-    }
+    //else if (value < 210) {
+    //    color = "#ff9100";
+    //    txt.innerText = "CRITICAL – Replace Soon";
+    //}
     else {
-        led.style.background = "red";
-        txt.innerText = "FAILURE – Replace NOW";
+        color = "#ff3c3c";
+        txt.innerText = "FAILURE – Replace Soon";
     }
+  
+    led.style.background = color;
+    led.style.boxShadow = `0 0 15px ${color}`;
 }
 
 // --------------------------------------------------------
 // EMAIL SENDER FUNCTION
 // --------------------------------------------------------
-function sendEmailAlert(esrCurrent, cCurrent, rul, healthIndex) {
+function sendEmailAlert(esrCurrent, cCurrent, rul, healthIndex, temperatureValue) {
     emailjs.send("service_igfjovu", "template_gih89it", {
         esrCurrent: esrCurrent,
         cCurrent: cCurrent,
         rul: rul,
-        healthIndex: healthIndex
+        healthIndex: healthIndex,
+        temperatureValue: temperatureValue    // ⭐ NEW
     })
     .then(() => console.log("Email sent"))
     .catch(err => console.log("Email error:", err));
@@ -122,7 +131,7 @@ client.on("message", (topic, msg) => {
     // --------- ESR ----------
     if (topic === "dpack/esr") {
 
-        latestESR = value;   // ⭐ NEW — store real ESR value
+        latestESR = value;
 
         document.getElementById("esrValue").innerText = value + " mΩ";
         updateLED(value);
@@ -137,18 +146,15 @@ client.on("message", (topic, msg) => {
         esrChart.update();
 
         // ----- EMAIL TRIGGER -----
-        if (value >= 190 && value < 210) {
-            sendEmailAlert(latestESR, latestC, latestRUL, latestHI);
-        }
-        if (value >= 210) {
-            sendEmailAlert(latestESR, latestC, latestRUL, latestHI);
+        if (value >= 190) {
+            sendEmailAlert(latestESR, latestC, latestRUL, latestHI, latestTemperature);
         }
     }
 
     // --------- CAPACITANCE ----------
     if (topic === "dpack/c") {
 
-        latestC = value;    // ⭐ NEW — store real C value
+        latestC = value;
 
         document.getElementById("cValue").innerText = value + " µF";
 
@@ -164,15 +170,26 @@ client.on("message", (topic, msg) => {
 
     // --------- HEALTH INDEX ----------
     if (topic === "dpack/hi") {
-        latestHI = value;   // ⭐ NEW
+        latestHI = value;
         document.getElementById("hiValue").innerText = value.toFixed(2);
     }
 
     // --------- RUL ----------
     if (topic === "dpack/rul") {
-        latestRUL = value;   // ⭐ NEW
+        latestRUL = value;
 
         let days = (value / 24).toFixed(1);
         document.getElementById("rulValue").innerText = `${value} hrs (${days} days)`;
+    }
+
+    // --------- TEMPERATURE (NEW) ----------
+    if (topic === "dpack/Temperature") {
+
+        latestTemperature = value;
+
+        // Update temperature box in dashboard
+        document.getElementById("tempValue").innerText = value.toFixed(2) + " °C";
+
+        console.log("Temperature Updated:", latestTemperature);
     }
 });
